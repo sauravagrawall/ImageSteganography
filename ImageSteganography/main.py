@@ -1,13 +1,14 @@
 # PIL module is used to extract
 # pixels of image and modify it
 from PIL import Image
-import time
+
 
 
 
 # Convert encoding data into 8-bit binary
 # form using ASCII value of characters
 class encoded():
+    password=""
     def genData(self,data):
 
             # list of binary codes
@@ -17,6 +18,9 @@ class encoded():
             for i in data:
                 newd.append(format(ord(i), '08b'))
             return newd
+
+    def putPassword(self,password):
+        self.password=password;
 
     # Pixels are modified according to the
     # 8-bit binary data and finally returned
@@ -84,6 +88,8 @@ class encoded():
     def data(self):
         data = input("Enter data to be encoded : ")
         return data
+    def getPassword(self):
+        return self.password
     def run(self):
         img = input("Enter image name(with extension) : ")
 
@@ -96,6 +102,9 @@ class encoded():
         newimg = image.copy()
         self.encode_enc(newimg, data)
 
+        key= input("Enter password to secure the message: ")
+        self.putPassword(key)
+
         new_img_name = input("Enter the name of new image(with extension) : ")
         newimg.save(new_img_name, str(new_img_name.split(".")[1].upper()))
 
@@ -105,7 +114,7 @@ class decoded:
         img = input("Enter image name(with extension) : ")
         image = Image.open(img, 'r')
 
-        data = ''
+        data = ""
         imgdata = iter(image.getdata())
 
         while (True):
@@ -128,31 +137,32 @@ class decoded:
 
 # Main Function
 def main():
-    a = int(input(":: Welcome to Steganography ::\n"
-                        "1. Encode\n2. Decode\n"))
-    if (a == 1):
-        t1 = encoded()
+    a=0
+    t1=encoded()
 
-        # start = time.time()
-        t1.run()
+    while(a!=3):
+        a = int(input("\n\n-------------------------------\n\n:: Welcome to Steganography ::\n"
+                                "1. Encode\n2. Decode\n3. Exit\n"))
 
-        # end = time.time()
-
-        # print(end-start," ms")
+        if (a == 1):
+            t1.run()
 
 
-    elif (a == 2):
-        num = int(input("Enter number of messages you want to decrypt: "))
-        Sentences = []
-        t=decoded()
-        for x in range(num):
-            Sentences.append(t.decode())
+        elif (a == 2):
+            t2=decoded()
+            message=t2.decode()
+            key = input("Enter password: ")
+            if(key==t1.getPassword()):
+                print("\nDecoded message :  ")
+                print(message)
+            else:
+                print("Wrong Password. Access Denied!")
 
-        print("\nDecoded messages :  ")
-        for s in Sentences:
-            print(s)
-    else:
-        raise Exception("Enter correct input")
+        elif (a == 3):
+            print("Exiting...")
+
+        else:
+           raise Exception("Enter correct option")
 
 # Driver Code
 if __name__ == '__main__' :
